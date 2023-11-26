@@ -1,0 +1,5 @@
+1.Vamos trabalhar com Strings, para os nomes e sitios, temos que tratar a entrada do usuário. Quando formos perguntar qual o país que ele deseja ir
+poderiamos tratar essa entrada e deixá-la minuscula. OU poderíamos listar todos os países com um numero do lado ( com um contador) e ai perguntar
+qual país o usuário deseja ir. Dai bastava colocar num looping o numero x de vezes que precisariamos iterar a lista para encontrarmos o país de escolha.
+Exemplo: Brasil(0), Rússia(1) , México(2). O usuário poderia escolher 2, então iriamos colocar num for looping para rodar 3 vezes:
+paisAtual = paisAtual-> proximoPais. E dai iria retornar o país escolhido. Podemos fazer isso para o sitio também.

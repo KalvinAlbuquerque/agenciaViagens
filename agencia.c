@@ -5,31 +5,11 @@ int main()
     /* Função da biblioteca 'locale.h' para permitir uso de caracteres especiais */
     setlocale(LC_ALL, "pt_BR");
 
-/*     Pais **inicio;
-    int resposta;
-    while(resposta != 1 || resposta != 2)
-    {
-        system("clear||cls");
-        printf("Você já sabe onde quer visitar ou não tem certeza?\n");
-        printf("[1] Já sei para onde quero viajar.\n[2] Não sei ainda para onde quero viajar.\n");
-        scanf("%d", &resposta); 
-    }
-
-    switch (resposta)
-    {
-    case 1:
-        
-        break;
-    case 2:
-
-        break;
-    default:
-        printf("Resposta incorreta, digite novamente");
-        break;
-    } */
+    /* Criando listas de turistas e paises */
+    Pais * listaPaises = NULL;
+    Turista * listaTurista = NULL;
 
     /* Teste para verificar a funcionalidade da função inserirPais, listarPaises*/
-    Pais * listaPaises = NULL;
     inserirPais(&listaPaises, "Brasil");
     inserirPais(&listaPaises, "Japão");
     inserirPais(&listaPaises, "Rússia");
@@ -51,9 +31,65 @@ int main()
     inserirNovoSitioTuristico(brasil, "Lençóis");
     listarSitiosTuristicos(brasil);
 
+    int opcao;
+    exibirMenu();
+    scanf("%d", &opcao);
+    getchar();
+    do
+    {
+        switch(opcao)
+        {
+            case 1:
+            {
+                /* Solicitando o nome do cliente */
+                char * nomeCliente = solicitarNomeDoCliente();
 
+                /* Cadastrando o cliente */
+                //cadastrarTurista(&listaTurista, nomeCliente, NULL);
+                break;
+            }
+            case 2:
+            {
+                break;
+            }
+            case 3:
+            {
+                break;
+            }
+            case 0:
+            {
+                //TODO: Desalocar toda a memória antes de finalizar o programa
+                break;
+            }
+            default:
+            {
+                printf("\nOpção Inválida");
+                pause();
+            }
+        }
 
+    }while(opcao != 0);
+    
+    /*while(resposta != 1 || resposta != 2)
+    {
+        system("clear||cls");
+        printf("Você já sabe onde quer visitar ou não tem certeza?\n");
+        printf("[1] Já sei para onde quero viajar.\n[2] Não sei ainda para onde quero viajar.\n");
+        scanf("%d", &resposta); 
+    }
 
+    switch (resposta)
+    {
+    case 1:
+        
+        break;
+    case 2:
+
+        break;
+    default:
+        printf("Resposta incorreta, digite novamente");
+        break;
+    } */
 
 }
 
@@ -215,6 +251,121 @@ void listarSitiosTuristicos(Pais * pais)
         sitioTuristicoAtual = sitioTuristicoAtual->proximoSitioTuristico;
     }
 }
+
+void cadastrarTurista(Turista ** listaTurista, const char * nome, Pais paisDestino)
+{
+    /* Criando novo turista */
+    Turista * novoTurista = (Turista*)malloc(sizeof(Turista));
+
+    /* Verificando se há espaço na memória */
+    if(novoTurista == NULL)
+    {
+        printf("Sem espaço para alocar memória!");
+
+        exit(1);   
+    }
+
+    /* Setando informações do Turista */
+    strcpy(novoTurista->nome, nome);
+    novoTurista->ProximoTurista = NULL;
+    
+    /* Inserindo o novo cliente na lista de clientes cadastrados.
+    * Caso a lista esteja vazia, o cliente se torna o primeiro elemento dela, caso contrário
+    * a lista é iterada até o final, onde o novo cliente é inserido.
+    */
+    if(*listaTurista == NULL)
+    {
+        *listaTurista = novoTurista;
+
+        return;
+    }
+    else
+    {
+        Turista * turistaAtual = *listaTurista;
+        while(turistaAtual->ProximoTurista != NULL)
+        {
+            turistaAtual = turistaAtual->ProximoTurista;
+        }
+
+        turistaAtual->ProximoTurista = novoTurista;
+    }
+}
+
+char * solicitarNomeDoCliente()
+{
+    char nomeCliente[TAM_MAX];
+
+    /* Solicitando o input do nome do cliente 
+    * Primeiro, o buffer é limpo antes da leitura, com a função 'fflush',
+    * depois é solicitado que o usuário digite o nome desejado, 
+    * por fim, é retirado o caractere '\n' através da função 'strcspn'.
+    */
+    fflush(stdin);
+    printf("\nDigite o nome do cliente: ");
+    fgets(nomeCliente, TAM_MAX, stdin);
+    nomeCliente[strcspn(nomeCliente, "\n")] = '\0';
+
+    return nomeCliente; 
+}
+
+void exibirMenu()
+{
+    limparTela();
+    exibirAviao();
+    printf("\n\n");
+    printf("********************************************\n");
+    printf("*  Bem-vindo à Agência de Viagens!!!       *\n");
+    printf("********************************************");
+    printf("\n1.Cadastrar cliente");
+    printf("\n2.Exibir clientes cadastrados");
+    printf("\n3.Exibir países de destino");
+    printf("\n0.Sair");
+    printf("\n\nDigite sua opção: ");
+}
+
+void pause() 
+{
+    printf("\nPressione Enter para continuar...");
+    while (getchar() != '\n');
+    getchar();
+}
+
+void exibirAviao() 
+{
+
+    printf("                                                            \n");
+    printf("                                                            \n");
+    printf("                                                            \n");
+    printf("                                                            \n");
+    printf("                ########                                    \n");
+    printf("                  ##    ##                                  \n");
+    printf("                  ##      ##                                \n");
+    printf("                    ##      ##                              \n");
+    printf("                    ##        ##                            \n");
+    printf("                      ##      ####                          \n");
+    printf("        ##            ##        ####                        \n");
+    printf("        ####          ##          ##                        \n");
+    printf("        ##  ##          ##          ##                      \n");
+    printf("        ##    ############            ################      \n");
+    printf("        ##                                          ##--    \n");
+    printf("        ##                                            ##    \n");
+    printf("        ##                                          ##--    \n");
+    printf("        ##    ############            ################      \n");
+    printf("        ##  ##          ##          ##                      \n");
+    printf("        ####          ##          ##                        \n");
+    printf("        ##            ##        ##@@                        \n");
+    printf("                    ::##      ####                          \n");
+    printf("                    ##      ..##                            \n");
+    printf("                    ##      ##                              \n");
+    printf("                  ##      ##                                \n");
+    printf("                  ##  ++##                                  \n");
+    printf("                ########                                    \n");
+    printf("                                                            \n");
+    printf("                                                            \n");
+    printf("                                                            \n"); 
+}
+
+
 
 void limparTela()
 {

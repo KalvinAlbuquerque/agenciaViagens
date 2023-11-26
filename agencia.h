@@ -7,11 +7,11 @@
 
 /* 
 * Header destinado a conter todos os protótipos de funções e estruturas que serão utilizadas na aplicação, 
-* juntamente com a respectiva documentação de cada uma 
+* juntamente com a respectiva documentação de cada uma.
 */
 
 
-/* Lista simplesmente encadeada de guias turísticos 
+/* Lista simplesmente encadeada de sítios turísticos. 
 * Possui os seguintes atributos: 
 * nome do sítio turístico,
 * um contador para turistas do tipo 1 e do tipo 2 que visitaram esse sitio turístico,
@@ -26,7 +26,7 @@ typedef struct SitioTuristico
 
 }SitioTuristico;
 
-/* Lista duplamente encadeada de países
+/* Lista duplamente encadeada de países.
 * Possui os segunites atributos:
 * nome do país,
 * um ponteiro para a lista de sítios turísticos daquele país,
@@ -40,6 +40,23 @@ typedef struct Pais
 
 }Pais;
 
+/* Lista simplesmente encadeada de turistas.
+* Possui os seguintes atributos:
+* nome do cliente,
+* tipo do cliente, podendo ser tipo um ou tipo dois. O tipo um será aquele cliente que possui
+* um país de destino confirmado, enquanto o tipo dois necessitará de ajuda do sistema para decidir
+* seu destino.
+* O penúltimo atributo é o país de destino e
+* um ponteiro para o próximo cliente. 
+*/
+typedef struct Turista
+{
+    char * nome;
+    int tipo;
+    Pais paisDestino;
+    struct Turista * ProximoTurista;
+
+}Turista;
 
 /*
     FUNÇÕES PARA PAÍSES
@@ -72,6 +89,18 @@ void inserirNovoSitioTuristico(Pais * pais, const char * nomeSitioTuristico);
 void listarSitiosTuristicos(Pais * pais);
 
 
+/*
+    FUNÇÕES PARA TURISTAS/CLIENTES/USUÁRIOS
+*/
+
+/* Função responsável por cadastrar o turista */
+void cadastrarTurista(Turista ** listaTurista, const char * nome, Pais paisDestino);
+
+/* Função responsável por solicitar o nome do cliente cadastrado e retorná-lo */
+char * solicitarNomeDoCliente();
+//TODO: criar função para solicitar nome e pais de destino do turista. Caso não tenha, chama a funçao para decidir o pais de destino
+/* Função destinada a printar o menu de escolhas do usuário*/
+void exibirMenu();
 /* 
     FUNÇÕES UTILITÁRIAS
 */
@@ -80,3 +109,10 @@ void listarSitiosTuristicos(Pais * pais);
 * Pode ser utilizada tanto em sistemas windows como unix.
 */
 void limparTela();
+
+/* Função destinada a dar um pause na tela do usuário e esperar ele apertar enter para continuar */
+void pause();
+
+/* Função destinada a exibir um avião para enfeitar o menu */
+void exibirAviao();
+
