@@ -58,6 +58,22 @@ typedef struct Turista
 
 }Turista;
 
+
+/* Árvore binária para representar as escolhas dos sítios turísticos.
+* Possui os seguintes atributos:
+* pergunta,
+* ponteiro para o próximo nó caso a resposta seja sim,
+* ponteiro para o próximo nó caso a resposta seja não. 
+ */
+typedef struct Arvore
+{
+    char pergunta[TAM_MAX];
+    struct Arvore * sim;
+    struct Arvore * nao;
+    int valor;
+}Arvore;
+
+
 /*
     FUNÇÕES PARA PAÍSES
 */
@@ -147,4 +163,17 @@ void pause();
 
 /* Função destinada a exibir um avião para enfeitar o menu */
 void exibirAviao();
+
+Arvore * inserirPergunta(Arvore* raiz, const char pergunta[TAM_MAX], int valor) ;
+
+/* Função destinada a exibir a árvore em 2D */
+void imprimeArvorePorValor(Arvore *raiz, int valor);
+
+void consultaUsuario(Arvore *arvore);
+
+void imprimeArvorePreOrdem(Arvore *raiz);
+
+void exibirArvore(Arvore *raiz, char op);
+
+
 

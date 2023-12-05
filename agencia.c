@@ -21,7 +21,6 @@ int main()
     inserirPais(&listaPaises, "Japão");
     inserirPais(&listaPaises, "Rússia");
     inserirPais(&listaPaises, "México");
-    listarPaises(listaPaises);
 
     /* Testando a função localizarPais */
     Pais * russia = localizarPais(listaPaises, "Rússia");
@@ -31,23 +30,45 @@ int main()
     inserirNovoSitioTuristico(russia, "Museu Hermitage");
     inserirNovoSitioTuristico(russia, "Kremlin");
     inserirNovoSitioTuristico(russia, "Catedral de São Basilísco");
-    listarSitiosTuristicos(russia);
 
     inserirNovoSitioTuristico(brasil, "Salvador");
     inserirNovoSitioTuristico(brasil, "Rio de Janeiro");
     inserirNovoSitioTuristico(brasil, "Lençóis");
-    listarSitiosTuristicos(brasil);
+
+    Arvore *raiz = NULL;
+
+    raiz = inserirPergunta(raiz, "Você Prefe viagem internacional?", 1);
+    raiz = inserirPergunta(raiz, "Você gosta de praia?", 2);
+    raiz = inserirPergunta(raiz, "Você gosta de montanhas?", 3);
+    raiz = inserirPergunta(raiz, "Você gosta de florestas?", 4);
+    raiz = inserirPergunta(raiz, "Você gosta de museus?", 5);
+    raiz = inserirPergunta(raiz, "Você gosta de frio?", 6);
+    raiz = inserirPergunta(raiz, "Você gosta de esportes aquáticos?", 7);
+    raiz = inserirPergunta(raiz, "Você prefere destinos rurais?", 8);
+    raiz = inserirPergunta(raiz, "Você gosta de atividades ao ar livre?", 9);
+    raiz = inserirPergunta(raiz, "Você prefere destinos históricos?", 10);
+    raiz = inserirPergunta(raiz, "Você gosta de aventuras?", 11);
+    raiz = inserirPergunta(raiz, "Você prefere destinos com muita agitação?", 12);
+    raiz = inserirPergunta(raiz, "Você gosta de gastronomia local?", 13);
+    raiz = inserirPergunta(raiz, "Você prefere destinos exóticos?", 14);
+    raiz = inserirPergunta(raiz, "Você gosta de festivais e eventos culturais?", 15);
+
+    raiz = inserirPergunta(raiz, "Seu destino ideal foi: Salvador", 16);
+    raiz = inserirPergunta(raiz, "Seu destino ideal foi: Rio de Janeiro", 17);
+
+
+    consultaUsuario(raiz); 
 
     // --------------------------------------------------------------------------------
 
     do
     {
-        limparTela();
+        //limparTela();
         exibirMenu();
         scanf(" %d", &opcao);
         getchar();
 
-        limparTela();
+        //limparTela();
 
         switch(opcao)
         {
@@ -149,27 +170,6 @@ int main()
         }
 
     }while(opcao != 0);
-    
-    /*while(resposta != 1 || resposta != 2)
-    {
-        system("clear||cls");
-        printf("Você já sabe onde quer visitar ou não tem certeza?\n");
-        printf("[1] Já sei para onde quero viajar.\n[2] Não sei ainda para onde quero viajar.\n");
-        scanf("%d", &resposta); 
-    }
-
-    switch (resposta)
-    {
-    case 1:
-        
-        break;
-    case 2:
-
-        break;
-    default:
-        printf("Resposta incorreta, digite novamente");
-        break;
-    } */
 
 }
 
@@ -576,7 +576,7 @@ void listarTuristas(Turista *listaTuristas)
 
 void exibirMenu()
 {
-    limparTela();
+    //limparTela();
     exibirAviao();
     printf("\n\n");
     printf("********************************************\n");
@@ -642,4 +642,96 @@ void limparTela()
     #else
         system("clear");
     #endif
+}
+
+void imprimeArvorePreOrdem(Arvore *raiz) 
+{
+    if (raiz == NULL) 
+    {
+        return;
+    }
+
+    // Imprime o valor atual durante o percurso pré-ordem
+    printf("%d: %s\n", raiz->valor, raiz->pergunta);
+
+    imprimeArvorePreOrdem(raiz->nao);
+
+    imprimeArvorePreOrdem(raiz->sim);
+}
+
+
+
+ Arvore * inserirPergunta(Arvore* raiz, const char pergunta[TAM_MAX], int valor) 
+ {
+    /* Se a árvore estiver vazia, retorna um único nodo */
+    if (raiz == NULL) 
+    {
+        /* Criando novo nodo */
+        raiz = (Arvore *)malloc(sizeof(Arvore));
+
+        /* Verificando se há espaço livre na memória */
+        if( raiz == NULL)
+        {
+            exit(1);
+        }
+
+        /* Setando atributos do novo nodo */
+        strcpy(raiz->pergunta, pergunta);
+        raiz->valor = valor;
+        raiz->sim = NULL;
+        raiz->nao = NULL;
+
+        return(raiz);
+    }
+    else 
+    {
+        /* Caso contrário, percorre a árvore recursivamente */
+        if(valor < raiz->valor)
+        {
+            raiz->sim = inserirPergunta(raiz->sim, pergunta, valor);
+        }
+        else if(valor > raiz->valor)
+        {
+            raiz->nao = inserirPergunta(raiz->nao, pergunta, valor);   
+        }
+    }
+
+    return raiz;
+}
+
+void consultaUsuario(Arvore *arvore)
+{
+    char resposta[50];
+
+    printf("%s\n", arvore->pergunta);
+    printf("Digite 'sim' ou 'nao': ");
+    scanf("%s", resposta);
+
+    if(strcmp(resposta, "sim") == 0)
+    {
+        if(arvore->sim != NULL)
+        {
+            consultaUsuario(arvore->sim);
+        }
+        else
+        {
+            printf("\nResposta: %d\n", arvore->valor);
+        }
+    }
+    else if(strcmp(resposta, "nao") == 0)
+    {
+        if(arvore->nao != NULL)
+        {
+            consultaUsuario(arvore->nao);
+        }
+        else
+        {
+            printf("\nResposta: %d\n", arvore->valor);
+        }
+    }
+    else
+    {
+        printf("\nERRO Resposta invalida\n");
+        system("pause");
+    }
 }
