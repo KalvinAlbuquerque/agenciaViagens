@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include <locale.h>
 
 #define TAM_MAX 50
@@ -62,14 +63,14 @@ typedef struct Turista
 /* Árvore binária para representar as escolhas dos sítios turísticos.
 * Possui os seguintes atributos:
 * pergunta,
-* ponteiro para o próximo nó caso a resposta seja sim,
-* ponteiro para o próximo nó caso a resposta seja não. 
+* ponteiro para o próximo nó caso a resposta seja sim, (sim = esquerda)
+* ponteiro para o próximo nó caso a resposta seja não. (nao = direita)
  */
 typedef struct Arvore
 {
-    char pergunta[TAM_MAX];
-    struct Arvore * sim;
+    char info[TAM_MAX];
     struct Arvore * nao;
+    struct Arvore * sim;
     int valor;
 }Arvore;
 
@@ -164,16 +165,14 @@ void pause();
 /* Função destinada a exibir um avião para enfeitar o menu */
 void exibirAviao();
 
-Arvore * inserirPergunta(Arvore* raiz, const char pergunta[TAM_MAX], int valor) ;
+Arvore * inserirPergunta(Arvore* raiz, const char * info, int valor) ;
+Arvore * criarNodo(const char * info, int valor);
 
-/* Função destinada a exibir a árvore em 2D */
-void imprimeArvorePorValor(Arvore *raiz, int valor);
 
-void consultaUsuario(Arvore *arvore);
+void printPerguntas(Arvore *raiz) ;
 
-void imprimeArvorePreOrdem(Arvore *raiz);
-
-void exibirArvore(Arvore *raiz, char op);
-
+Arvore * rotateLeft(struct Arvore* x);
+Arvore* rotateRight(struct Arvore* y);
+int altura(Arvore* no);
 
 

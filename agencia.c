@@ -37,34 +37,37 @@ int main()
 
     Arvore *raiz = NULL;
 
-    raiz = inserirPergunta(raiz, "Você Prefe viagem internacional?", 1);
-    raiz = inserirPergunta(raiz, "Você gosta de praia?", 2);
-    raiz = inserirPergunta(raiz, "Você gosta de montanhas?", 3);
-    raiz = inserirPergunta(raiz, "Você gosta de florestas?", 4);
-    raiz = inserirPergunta(raiz, "Você gosta de museus?", 5);
-    raiz = inserirPergunta(raiz, "Você gosta de frio?", 6);
-    raiz = inserirPergunta(raiz, "Você gosta de esportes aquáticos?", 7);
-    raiz = inserirPergunta(raiz, "Você prefere destinos rurais?", 8);
-    raiz = inserirPergunta(raiz, "Você gosta de atividades ao ar livre?", 9);
-    raiz = inserirPergunta(raiz, "Você prefere destinos históricos?", 10);
-    raiz = inserirPergunta(raiz, "Você gosta de aventuras?", 11);
-    raiz = inserirPergunta(raiz, "Você prefere destinos com muita agitação?", 12);
-    raiz = inserirPergunta(raiz, "Você gosta de gastronomia local?", 13);
-    raiz = inserirPergunta(raiz, "Você prefere destinos exóticos?", 14);
-    raiz = inserirPergunta(raiz, "Você gosta de festivais e eventos culturais?", 15);
+    raiz = inserirPergunta(raiz, "Você Prefe viagem internacional?",1);
 
-    raiz = inserirPergunta(raiz, "Seu destino ideal foi: Salvador", 16);
-    raiz = inserirPergunta(raiz, "Seu destino ideal foi: Rio de Janeiro", 17);
+    inserirPergunta(raiz, "Você gosta de praia?",2);
 
+    inserirPergunta(raiz, "Você gosta de montanhas?",3);
 
-    consultaUsuario(raiz); 
+    inserirPergunta(raiz, "Seu destino ideal é Canadá",4);
 
+    inserirPergunta(raiz, "Seu destino ideal é Salvador",5);
+/*     inserirPergunta(raiz, "Você gosta de florestas?", 4); */
+    /* inserirPergunta(raiz, "Você gosta de museus?", 5);
+    inserirPergunta(raiz, "Você gosta de frio?", 6);
+    inserirPergunta(raiz, "Você gosta de esportes aquáticos?", 7);
+    inserirPergunta(raiz, "Você prefere destinos rurais?", 8);
+    inserirPergunta(raiz, "Você gosta de atividades ao ar livre?", 9);
+    inserirPergunta(raiz, "Você prefere destinos históricos?", 10);
+    inserirPergunta(raiz, "Você gosta de aventuras?", 11);
+    inserirPergunta(raiz, "Você prefere destinos com muita agitação?", 12);
+    inserirPergunta(raiz, "Você gosta de gastronomia local?", 13);
+    inserirPergunta(raiz, "Você prefere destinos exóticos?", 14);
+    inserirPergunta(raiz, "Você gosta de festivais e eventos culturais?",15);
+    inserirPergunta(raiz, "Seu destino ideal foi: Salvador", 16);
+    inserirPergunta(raiz, "Seu destino ideal foi: Rio de Janeiro", 17); */
+
+    printPerguntas(raiz);
     // --------------------------------------------------------------------------------
 
     do
     {
         //limparTela();
-        exibirMenu();
+        //exibirMenu();
         scanf(" %d", &opcao);
         getchar();
 
@@ -576,7 +579,7 @@ void listarTuristas(Turista *listaTuristas)
 
 void exibirMenu()
 {
-    //limparTela();
+    limparTela();
     exibirAviao();
     printf("\n\n");
     printf("********************************************\n");
@@ -644,94 +647,190 @@ void limparTela()
     #endif
 }
 
-void imprimeArvorePreOrdem(Arvore *raiz) 
+
+
+/* Arvore * inserirPergunta(Arvore* raiz, const char pergunta[TAM_MAX], int valor) 
 {
-    if (raiz == NULL) 
+    if(raiz == NULL)
+    {
+        Arvore* novo = (Arvore*) malloc(sizeof(Arvore));
+        strcpy(novo->pergunta, pergunta);
+        novo->valor = valor;
+        novo->nao = NULL;
+        novo->sim = NULL;
+
+        return novo;
+    }
+
+    if(valor < raiz->valor)
+    {
+        raiz->sim = inserirPergunta(raiz->sim, pergunta, valor);
+    }
+    else if(valor > raiz->valor)
+    {
+        raiz->nao = inserirPergunta(raiz->nao, pergunta, valor);   
+    }
+    else if(valor == raiz->valor)
+    {
+        return raiz;
+    }
+
+    return raiz;
+} */
+
+Arvore* inserirPergunta(Arvore* raiz, const char * info, int valor) {
+    
+   if (raiz == NULL) {
+        Arvore* newNode = (Arvore*)malloc(sizeof(Arvore));
+        if (newNode == NULL) {
+            // Tratamento de erro, se a alocação falhar
+            exit(EXIT_FAILURE);
+        }
+
+        // Usar strncpy para copiar a string, evitando leituras excessivas
+        strncpy(newNode->info, info, TAM_MAX - 1);
+        newNode->info[TAM_MAX - 1] = '\0';  // Garantir terminação nula
+        newNode->nao = NULL;
+        newNode->sim = NULL;
+
+        return newNode;
+    }
+
+    // Comparar valores e decidir qual ramo seguir
+    if (valor < raiz->valor) {
+        raiz->sim = inserirPergunta(raiz->sim, info, valor);
+    } else if (valor > raiz->valor) {
+        raiz->nao = inserirPergunta(raiz->nao, info, valor);
+    } else {
+        // Chaves duplicadas não são permitidas
+        return raiz;
+    }
+
+ 
+    int balance = (raiz->sim ? 1 + altura(raiz->sim) : 0) - (raiz->nao ? 1 + altura(raiz->nao) : 0);
+
+    // Realizar rotações, se necessário
+    if (balance > 1) {
+        // Desbalanceamento à esquerda
+        if (valor < raiz->sim->valor) {
+            // Rotação simples à direita
+            return rotateRight(raiz);
+        } else {
+            // Rotação dupla: rotação simples à esquerda no filho esquerdo
+            // seguida de rotação simples à direita no nó atual
+            raiz->sim = rotateLeft(raiz->sim);
+            return rotateRight(raiz);
+        }
+    } else if (balance < -1) {
+        // Desbalanceamento à direita
+        if (valor > raiz->nao->valor) {
+            // Rotação simples à esquerda
+            return rotateLeft(raiz);
+        } else {
+            // Rotação dupla: rotação simples à direita no filho direito
+            // seguida de rotação simples à esquerda no nó atual
+            raiz->nao = rotateRight(raiz->nao);
+            return rotateLeft(raiz);
+        }
+    }
+    return raiz;
+} 
+
+void printPerguntas(Arvore *raiz) 
+{
+    if(raiz == NULL)
     {
         return;
     }
 
-    // Imprime o valor atual durante o percurso pré-ordem
-    printf("%d: %s\n", raiz->valor, raiz->pergunta);
+    printf("\nPergunta: %s", raiz->info);
 
-    imprimeArvorePreOrdem(raiz->nao);
-
-    imprimeArvorePreOrdem(raiz->sim);
-}
-
-
-
- Arvore * inserirPergunta(Arvore* raiz, const char pergunta[TAM_MAX], int valor) 
- {
-    /* Se a árvore estiver vazia, retorna um único nodo */
-    if (raiz == NULL) 
+    if(raiz->nao == NULL && raiz->sim == NULL)
     {
-        /* Criando novo nodo */
-        raiz = (Arvore *)malloc(sizeof(Arvore));
-
-        /* Verificando se há espaço livre na memória */
-        if( raiz == NULL)
-        {
-            exit(1);
-        }
-
-        /* Setando atributos do novo nodo */
-        strcpy(raiz->pergunta, pergunta);
-        raiz->valor = valor;
-        raiz->sim = NULL;
-        raiz->nao = NULL;
-
-        return(raiz);
-    }
-    else 
-    {
-        /* Caso contrário, percorre a árvore recursivamente */
-        if(valor < raiz->valor)
-        {
-            raiz->sim = inserirPergunta(raiz->sim, pergunta, valor);
-        }
-        else if(valor > raiz->valor)
-        {
-            raiz->nao = inserirPergunta(raiz->nao, pergunta, valor);   
-        }
+        printf("\nSeu destino é: %s\n", raiz->info);
+        return;
     }
 
-    return raiz;
-}
-
-void consultaUsuario(Arvore *arvore)
-{
-    char resposta[50];
-
-    printf("%s\n", arvore->pergunta);
-    printf("Digite 'sim' ou 'nao': ");
-    scanf("%s", resposta);
-
-    if(strcmp(resposta, "sim") == 0)
+    char opcao;
+    printf(" (S/N): ");
+    scanf(" %c", &opcao);
+    
+    if(opcao == 's' || opcao == 'S')
     {
-        if(arvore->sim != NULL)
+        if(raiz->sim != NULL)
         {
-            consultaUsuario(arvore->sim);
+            printPerguntas(raiz->sim);
         }
         else
         {
-            printf("\nResposta: %d\n", arvore->valor);
-        }
-    }
-    else if(strcmp(resposta, "nao") == 0)
-    {
-        if(arvore->nao != NULL)
-        {
-            consultaUsuario(arvore->nao);
-        }
-        else
-        {
-            printf("\nResposta: %d\n", arvore->valor);
+            printf("\nSeu destino é: %s\n", raiz->info);
         }
     }
     else
     {
-        printf("\nERRO Resposta invalida\n");
-        system("pause");
+        if(raiz->nao != NULL)
+        {
+            printPerguntas(raiz->nao);
+        }
+        else
+        {
+            printf("\nSeu destino é: %s\n", raiz->info);
+        }
     }
+}
+
+
+Arvore * criarNodo(const char * info, int valor)
+{
+    Arvore * newNode = (Arvore*)malloc(sizeof(Arvore));
+
+    if (newNode == NULL) 
+    {
+        printf("\nNão há memória disponível");
+
+        exit(EXIT_FAILURE);
+    }
+
+    newNode->sim = NULL;
+    newNode->nao = NULL;
+    newNode->valor = valor;
+    strcpy(newNode->info, info);
+
+    return newNode;
+}
+
+void inorderTraversal(Arvore * root)
+{
+    if (root != NULL) 
+    {
+        inorderTraversal(root->sim);
+        printf("\n%s", root->info);
+        inorderTraversal(root->nao);
+    }
+}
+
+Arvore * rotateLeft(struct Arvore* x) {
+    Arvore* y = x->nao;
+    x->nao = y->sim;
+    y->sim = x;
+    return y;
+}
+
+// Função auxiliar para realizar uma rotação simples à direita
+Arvore* rotateRight(struct Arvore* y) {
+    struct Arvore* x = y->sim;
+    y->sim = x->nao;
+    x->nao = y;
+    return x;
+}
+
+int altura(Arvore* no) {
+    if (no == NULL) {
+        return 0;
+    }
+
+    int alturaSim = altura(no->sim);
+    int alturaNao = altura(no->nao);
+
+    return (alturaSim > alturaNao) ? alturaSim + 1 : alturaNao + 1;
 }
