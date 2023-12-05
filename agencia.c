@@ -14,64 +14,26 @@ int main()
     char nomeCliente[TAM_MAX];
     int opcao;
 
-    // Testes -----------------------------------------------------------------------
-
-    /* Teste para verificar a funcionalidade da função inserirPais, listarPaises*/
-    inserirPais(&listaPaises, "Brasil");
-    inserirPais(&listaPaises, "Japão");
-    inserirPais(&listaPaises, "Rússia");
-    inserirPais(&listaPaises, "México");
-
-    /* Testando a função localizarPais */
-    Pais * russia = localizarPais(listaPaises, "Rússia");
-    Pais * brasil = localizarPais(listaPaises, "Brasil");
-
-    /* Testando a função inserirSítio e listarSítio */
-    inserirNovoSitioTuristico(russia, "Museu Hermitage");
-    inserirNovoSitioTuristico(russia, "Kremlin");
-    inserirNovoSitioTuristico(russia, "Catedral de São Basilísco");
-
-    inserirNovoSitioTuristico(brasil, "Salvador");
-    inserirNovoSitioTuristico(brasil, "Rio de Janeiro");
-    inserirNovoSitioTuristico(brasil, "Lençóis");
-
+    /* Criando árvore e inserindo perguntas */
     Arvore *raiz = NULL;
 
-    raiz = inserirPergunta(raiz, "Você Prefe viagem internacional?",1);
+    carregarPerguntas(&raiz);
 
-    inserirPergunta(raiz, "Você gosta de praia?",2);
+    carregarPaisesESitios(&listaPaises);
+    
 
-    inserirPergunta(raiz, "Você gosta de montanhas?",3);
+    /* Carregando os turistas do txt */
+    popularTuristas(listaPaises, &listaTuristas, "turistas.txt");
 
-    inserirPergunta(raiz, "Seu destino ideal é Canadá",4);
-
-    inserirPergunta(raiz, "Seu destino ideal é Salvador",5);
-/*     inserirPergunta(raiz, "Você gosta de florestas?", 4); */
-    /* inserirPergunta(raiz, "Você gosta de museus?", 5);
-    inserirPergunta(raiz, "Você gosta de frio?", 6);
-    inserirPergunta(raiz, "Você gosta de esportes aquáticos?", 7);
-    inserirPergunta(raiz, "Você prefere destinos rurais?", 8);
-    inserirPergunta(raiz, "Você gosta de atividades ao ar livre?", 9);
-    inserirPergunta(raiz, "Você prefere destinos históricos?", 10);
-    inserirPergunta(raiz, "Você gosta de aventuras?", 11);
-    inserirPergunta(raiz, "Você prefere destinos com muita agitação?", 12);
-    inserirPergunta(raiz, "Você gosta de gastronomia local?", 13);
-    inserirPergunta(raiz, "Você prefere destinos exóticos?", 14);
-    inserirPergunta(raiz, "Você gosta de festivais e eventos culturais?",15);
-    inserirPergunta(raiz, "Seu destino ideal foi: Salvador", 16);
-    inserirPergunta(raiz, "Seu destino ideal foi: Rio de Janeiro", 17); */
-
-    printPerguntas(raiz);
-    // --------------------------------------------------------------------------------
-
+    /* Menu principal  */
     do
     {
-        //limparTela();
-        //exibirMenu();
+        limparTela();
+        exibirMenu();
         scanf(" %d", &opcao);
         getchar();
 
-        //limparTela();
+        limparTela();
 
         switch(opcao)
         {
@@ -83,17 +45,45 @@ int main()
 
                 limparTela();
 
+                Pais *paisSelecionado = NULL;
+                SitioTuristico *sitioSelecionado = NULL;
+                int tipo = 0;
+
                 /* Cadastrando o cliente */
                 if (!clienteExiste)
                 {
+                    char respostaCliente;
                     /* Selecionando o país de destino e criando o cliente/turista */
-                    printf("Bem vindo %s!", nomeCliente);
-                    Pais *paisSelecionado = selecionarPais(listaPaises, "Para qual país deseja viajar?");
+                    printf("Bem vindo %s! Você já sabe para qual destino deseja viajar? (S/N)\n", nomeCliente);
+                    scanf(" %c", &respostaCliente);
+                    getchar();
 
                     limparTela();
-
                     printf("Certo %s, ", nomeCliente);
-                    SitioTuristico *sitioSelecionado = selecionarSitioTuristico(paisSelecionado, "qual dos sítios turísticos abaixo você tem interesse em visitar?");
+
+                    if (respostaCliente == 's' || respostaCliente == 'S')
+                    {
+                        tipo = 1;
+
+                        paisSelecionado = selecionarPais(listaPaises, "Para qual país deseja viajar?");
+
+                        limparTela();
+                        
+                        sitioSelecionado = selecionarSitioTuristico(paisSelecionado, "Qual dos sítios turísticos abaixo você tem interesse em visitar?\n");
+                    }
+                    else
+                    {
+                        Arvore * arvore = printPerguntas(raiz);
+
+                        tipo = 2;
+                        
+                        char nomeSitio[TAM_MAX];
+                        strcpy(nomeSitio, arvore->info);
+
+                        paisSelecionado = localizarPaisPeloNomeDoSitio(listaPaises, nomeSitio);
+                        sitioSelecionado = localizarSitioTuristico(paisSelecionado->listaSitiosTuristico, nomeSitio);
+                    }
+                    
 
                     limparTela();
 
@@ -105,9 +95,8 @@ int main()
                     if (confirmacao)
                     {
                         /* Cadastrando cliente */
-                        cadastrarTurista(&listaTuristas, nomeCliente, paisSelecionado);
-                        sitioSelecionado->countTurista1++;
-                        printf("Cadastramos você no nosso sistema %s, boa viagem!\n", nomeCliente);
+                        cadastrarTurista(&listaTuristas, nomeCliente, tipo, paisSelecionado, sitioSelecionado);
+                        printf("Cadastramos você no nosso sistema %s para o país %s, na cidade de %s! Boa viagem!\n", nomeCliente, paisSelecionado->nome, sitioSelecionado->nome);
                         pause();
                     }
                     else
@@ -127,6 +116,7 @@ int main()
             }
             case 2:
             {
+                
                 listarTuristas(listaTuristas);
                 printf("\n");
                 pause();
@@ -162,8 +152,9 @@ int main()
             }
             case 0:
             {
-                //TODO: Desalocar toda a memória antes de finalizar o programa
-                break;
+                salvarTuristas("turistas.txt", listaTuristas);
+                //freeAll(&listaTuristas, &listaPaises, raiz);
+                exit(1);
             }
             default:
             {
@@ -180,9 +171,10 @@ int confirmarViagem(char *nome, Pais *pais, SitioTuristico *sitioTuristico) {
 
     while (1)
     {
+        char confirmacao;
+
         printf("Então %s, você deseja viajar para a(o) %s e visitar o sítio turístico %s? (S/N)\nConfirme: ", nome, pais->nome, sitioTuristico->nome);
-        int confirmacao = getchar();
-        getchar();
+        scanf(" %c", &confirmacao);
 
         if (confirmacao == 'S' || confirmacao == 's') 
         {
@@ -483,7 +475,7 @@ void listarTuristasPorSitiosTuristicos(Pais * pais)
     }
 }
 
-void cadastrarTurista(Turista ** listaTurista, const char * nome, Pais *paisDestino)
+void cadastrarTurista(Turista ** listaTurista, const char * nome, int tipo, Pais *paisDestino, SitioTuristico *sitioDestino)
 {
     /* Criando novo turista */
     Turista * novoTurista = (Turista*)malloc(sizeof(Turista));
@@ -498,8 +490,19 @@ void cadastrarTurista(Turista ** listaTurista, const char * nome, Pais *paisDest
 
     /* Setando informações do Turista */
     strcpy(novoTurista->nome, nome);
+    novoTurista->tipo = tipo;
     novoTurista->proximoTurista = NULL;
     novoTurista->paisDestino = paisDestino;
+    novoTurista->sitioDestino = sitioDestino;
+
+    if (novoTurista->tipo == 1)
+    {
+        novoTurista->sitioDestino->countTurista1++;
+    }
+    else
+    {
+        novoTurista->sitioDestino->countTurista2++;
+    }
     
     /* Inserindo o novo cliente na lista de clientes cadastrados.
     * Caso a lista esteja vazia, o cliente se torna o primeiro elemento dela, caso contrário
@@ -577,6 +580,42 @@ void listarTuristas(Turista *listaTuristas)
     }
 }
 
+Pais * localizarPaisPeloNomeDoSitio(Pais *listaDePaises, const char *nomeDoSitio)
+{
+    /* Verificando se a lista de países está vazia */
+    if(listaDePaises == NULL)
+    {
+        printf("\nA lista de países está vazia!");
+
+        return NULL;
+    } 
+
+    /* Iterando toda a lista de países e comparando os nomes dos países com o nome do país passado por parâmetro.
+    * caso o país seja encontrado, ele é retornado. Caso contrário, é printado que o país não consta na lista.
+    */
+    Pais * paisAtual = listaDePaises;
+    while(paisAtual != NULL)
+    {
+        SitioTuristico * aux = paisAtual->listaSitiosTuristico;
+        
+        while(aux != NULL)
+        {
+            if(strcmp(aux->nome, nomeDoSitio) == 0)
+            {
+                return paisAtual;
+            }
+
+            aux = aux->proximoSitioTuristico;
+        }
+
+        paisAtual = paisAtual->proximoPais;
+    }
+
+    /* Caso tenha chegado ao fim da lista, o país procurado não está cadastrado */
+
+    return NULL;
+}
+
 void exibirMenu()
 {
     limparTela();
@@ -649,12 +688,12 @@ void limparTela()
 
 
 
-/* Arvore * inserirPergunta(Arvore* raiz, const char pergunta[TAM_MAX], int valor) 
+Arvore * inserirPergunta(Arvore* raiz, const char pergunta[TAM_MAX], int valor) 
 {
     if(raiz == NULL)
     {
         Arvore* novo = (Arvore*) malloc(sizeof(Arvore));
-        strcpy(novo->pergunta, pergunta);
+        strcpy(novo->info, pergunta);
         novo->valor = valor;
         novo->nao = NULL;
         novo->sim = NULL;
@@ -676,80 +715,23 @@ void limparTela()
     }
 
     return raiz;
-} */
+}
 
-Arvore* inserirPergunta(Arvore* raiz, const char * info, int valor) {
-    
-   if (raiz == NULL) {
-        Arvore* newNode = (Arvore*)malloc(sizeof(Arvore));
-        if (newNode == NULL) {
-            // Tratamento de erro, se a alocação falhar
-            exit(EXIT_FAILURE);
-        }
-
-        // Usar strncpy para copiar a string, evitando leituras excessivas
-        strncpy(newNode->info, info, TAM_MAX - 1);
-        newNode->info[TAM_MAX - 1] = '\0';  // Garantir terminação nula
-        newNode->nao = NULL;
-        newNode->sim = NULL;
-
-        return newNode;
-    }
-
-    // Comparar valores e decidir qual ramo seguir
-    if (valor < raiz->valor) {
-        raiz->sim = inserirPergunta(raiz->sim, info, valor);
-    } else if (valor > raiz->valor) {
-        raiz->nao = inserirPergunta(raiz->nao, info, valor);
-    } else {
-        // Chaves duplicadas não são permitidas
-        return raiz;
-    }
-
- 
-    int balance = (raiz->sim ? 1 + altura(raiz->sim) : 0) - (raiz->nao ? 1 + altura(raiz->nao) : 0);
-
-    // Realizar rotações, se necessário
-    if (balance > 1) {
-        // Desbalanceamento à esquerda
-        if (valor < raiz->sim->valor) {
-            // Rotação simples à direita
-            return rotateRight(raiz);
-        } else {
-            // Rotação dupla: rotação simples à esquerda no filho esquerdo
-            // seguida de rotação simples à direita no nó atual
-            raiz->sim = rotateLeft(raiz->sim);
-            return rotateRight(raiz);
-        }
-    } else if (balance < -1) {
-        // Desbalanceamento à direita
-        if (valor > raiz->nao->valor) {
-            // Rotação simples à esquerda
-            return rotateLeft(raiz);
-        } else {
-            // Rotação dupla: rotação simples à direita no filho direito
-            // seguida de rotação simples à esquerda no nó atual
-            raiz->nao = rotateRight(raiz->nao);
-            return rotateLeft(raiz);
-        }
-    }
-    return raiz;
-} 
-
-void printPerguntas(Arvore *raiz) 
+Arvore * printPerguntas(Arvore *raiz) 
 {
     if(raiz == NULL)
     {
-        return;
+        return NULL;
     }
-
-    printf("\nPergunta: %s", raiz->info);
 
     if(raiz->nao == NULL && raiz->sim == NULL)
     {
         printf("\nSeu destino é: %s\n", raiz->info);
-        return;
+
+        return raiz;
     }
+
+    printf("\nPergunta: %s", raiz->info);
 
     char opcao;
     printf(" (S/N): ");
@@ -759,7 +741,7 @@ void printPerguntas(Arvore *raiz)
     {
         if(raiz->sim != NULL)
         {
-            printPerguntas(raiz->sim);
+            raiz = printPerguntas(raiz->sim);
         }
         else
         {
@@ -770,13 +752,16 @@ void printPerguntas(Arvore *raiz)
     {
         if(raiz->nao != NULL)
         {
-            printPerguntas(raiz->nao);
+            raiz = printPerguntas(raiz->nao);
         }
         else
         {
             printf("\nSeu destino é: %s\n", raiz->info);
         }
     }
+
+
+    return raiz;
 }
 
 
@@ -809,28 +794,198 @@ void inorderTraversal(Arvore * root)
     }
 }
 
-Arvore * rotateLeft(struct Arvore* x) {
-    Arvore* y = x->nao;
-    x->nao = y->sim;
-    y->sim = x;
-    return y;
-}
+void popularTuristas(Pais *listaPaises, Turista **listaTuristas, char *nomeArquivo) {
+    FILE *arquivo;
+    arquivo = fopen(nomeArquivo, "r");
 
-// Função auxiliar para realizar uma rotação simples à direita
-Arvore* rotateRight(struct Arvore* y) {
-    struct Arvore* x = y->sim;
-    y->sim = x->nao;
-    x->nao = y;
-    return x;
-}
-
-int altura(Arvore* no) {
-    if (no == NULL) {
-        return 0;
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
     }
 
-    int alturaSim = altura(no->sim);
-    int alturaNao = altura(no->nao);
+    char linha[100];
+    char nome[TAM_MAX], pais[TAM_MAX], sitio[TAM_MAX];
+    int tipo;
 
-    return (alturaSim > alturaNao) ? alturaSim + 1 : alturaNao + 1;
+    // Verifica se o arquivo está vazio
+    if (fscanf(arquivo, "%[^\n]\n", linha) == EOF) {
+        printf("O arquivo está vazio.\n");
+        fclose(arquivo);
+        return;
+    }
+
+    // Volta ao início do arquivo para começar a leitura
+    fseek(arquivo, 0, SEEK_SET);
+
+    while (fscanf(arquivo, "%[^;];%d;%[^;];%[^\n]\n", nome, &tipo, pais, sitio) == 4) {
+        Pais *paisDestino = localizarPais(listaPaises, pais);
+        SitioTuristico *sitioDestino = localizarSitioTuristico(paisDestino->listaSitiosTuristico, sitio);
+        cadastrarTurista(listaTuristas, nome, tipo, paisDestino, sitioDestino);
+    }
+
+    fclose(arquivo);
+}
+
+
+void salvarTuristas(const char *nomeArquivo, Turista *listaTuristas) 
+{
+    FILE *arquivo = fopen(nomeArquivo, "w");
+    
+    if (arquivo == NULL) 
+    {
+        fclose(arquivo);
+        printf("Erro ao abrir o arquivo para escrita.\n");
+        return;
+    }
+
+    while (listaTuristas != NULL) 
+    {
+        fprintf(arquivo, "%s;%d;%s;%s\n", listaTuristas->nome, listaTuristas->tipo, listaTuristas->paisDestino->nome, listaTuristas->sitioDestino->nome);
+        listaTuristas = listaTuristas->proximoTurista;
+    }
+
+    fclose(arquivo);
+}
+
+void freeAll(Turista **listaTuristas, Pais **listaPaises, Arvore *raiz)
+{
+    Turista *turistaAnt = NULL;
+    
+    while((*listaTuristas) != NULL)
+    {
+        turistaAnt = *listaTuristas;
+        *listaTuristas = (*listaTuristas)->proximoTurista;
+        free(turistaAnt);
+    }
+
+    Pais *paisAnt = NULL;
+    
+    while((*listaPaises) != NULL)
+    {
+        paisAnt = *listaPaises;
+
+        SitioTuristico *sitioInicial = paisAnt->listaSitiosTuristico;
+        SitioTuristico *sitioAtual = NULL;
+    
+        while((sitioInicial) != NULL)
+        {
+            sitioAtual = sitioInicial;
+            sitioInicial = (sitioInicial)->proximoSitioTuristico;
+            free(sitioAtual);
+        }
+
+        *listaPaises = (*listaPaises)->proximoPais;
+        free(paisAnt);
+    }
+
+    freeArvore(raiz);
+}
+
+void freeArvore(Arvore *raiz)
+{
+    if(raiz == NULL) return;
+    freeArvore(raiz->sim);
+    freeArvore(raiz->nao);
+    free(raiz);
+}
+
+void carregarPerguntas(Arvore ** raiz)
+{
+    /* 
+        Viagem Nacional
+     */
+    *raiz = inserirPergunta(*raiz, "Você prefere viagem nacional?", 16);
+
+    inserirPergunta(*raiz, "Você gosta de praia?", 8);
+    inserirPergunta(*raiz, "Você gosta de culinária africana/indígena?", 4);
+    
+    inserirPergunta(*raiz, "Você gosta de culinária indígena?", 2);
+    inserirPergunta(*raiz, "Salvador", 3);
+    inserirPergunta(*raiz, "Fortaleza", 1);
+    
+    inserirPergunta(*raiz, "Você gosta de trilhas?", 6);
+    inserirPergunta(*raiz, "Florianópolis", 5);
+    inserirPergunta(*raiz, "Porto Alegre", 7);
+
+    inserirPergunta(*raiz, "Você gosta de museus?", 12);
+
+    inserirPergunta(*raiz, "Você gosta de shows de rock?", 10);
+    inserirPergunta(*raiz, "Distrito Federal", 9);
+    inserirPergunta(*raiz, "Belo Horizonte", 11);
+
+    inserirPergunta(*raiz, "Você gosta de cultura sertaneja?", 14);
+    inserirPergunta(*raiz, "Goiânia", 13);
+    inserirPergunta(*raiz, "Manaus", 15);
+
+    /*
+        Viagem Internacional 
+     */
+
+    inserirPergunta(*raiz, "Você gosta de frio?", 24);
+    inserirPergunta(*raiz, "Você gosta da cultura oriental?", 20);
+
+    inserirPergunta(*raiz, "Você gosta de cultura geek?", 18);
+    inserirPergunta(*raiz, "Tokyo", 17);
+    inserirPergunta(*raiz, "Seul", 19);
+
+    inserirPergunta(*raiz, "Você gosta de culinária com massas?", 22);
+    inserirPergunta(*raiz, "Roma", 21);
+    inserirPergunta(*raiz, "Berlim", 23);
+
+    inserirPergunta(*raiz, "Você gosta de praia?", 28);
+    
+    inserirPergunta(*raiz, "Você gosta de luxo?", 26);
+    inserirPergunta(*raiz, "Dubai", 25);
+    inserirPergunta(*raiz, "Bangkok", 27);
+
+    inserirPergunta(*raiz, "Você gosta de Parques Florestais?", 30);
+    inserirPergunta(*raiz, "Safari Africano", 29);
+    inserirPergunta(*raiz, "Cairo", 31);
+}
+
+void carregarPaisesESitios(Pais ** listaPaises)
+{
+
+    /* Inserindo países e sítios turísticos */
+
+    inserirPais(listaPaises, "Brasil");
+    inserirPais(listaPaises, "Japão");
+    inserirPais(listaPaises, "Coréia do Sul");
+    inserirPais(listaPaises, "Itália");
+    inserirPais(listaPaises, "Alemanha");
+    inserirPais(listaPaises, "Emirados Árabes Unidos");
+    inserirPais(listaPaises, "Tailândia");
+    inserirPais(listaPaises, "Quênia");
+    inserirPais(listaPaises, "Egito");
+
+
+
+    Pais * brasil = localizarPais(*listaPaises, "Brasil");
+    Pais * japao = localizarPais(*listaPaises, "Japão");
+    Pais * coreiaDoSul = localizarPais(*listaPaises, "Coréia do Sul");
+    Pais * italia = localizarPais(*listaPaises, "Itália");
+    Pais * alemanha = localizarPais(*listaPaises, "Alemanha");
+    Pais * eam = localizarPais(*listaPaises, "Emirados Árabes Unidos");
+    Pais * tailandia = localizarPais(*listaPaises, "Tailândia");
+    Pais * quenia = localizarPais(*listaPaises, "Quênia");
+    Pais * egito = localizarPais(*listaPaises, "Egito");
+
+    inserirNovoSitioTuristico(brasil, "Salvador");
+    inserirNovoSitioTuristico(brasil, "Fortaleza");
+    inserirNovoSitioTuristico(brasil, "Florianópolis");
+    inserirNovoSitioTuristico(brasil, "Porto Alegre");
+    inserirNovoSitioTuristico(brasil, "Brasilia");
+    inserirNovoSitioTuristico(brasil, "Belo Horizonte");
+    inserirNovoSitioTuristico(brasil, "Goiânia");
+    inserirNovoSitioTuristico(brasil, "Manaus");
+
+    inserirNovoSitioTuristico(japao, "Tokyo");
+    inserirNovoSitioTuristico(coreiaDoSul, "Seul");
+    inserirNovoSitioTuristico(italia, "Roma");
+    inserirNovoSitioTuristico(alemanha, "Berlim");
+    inserirNovoSitioTuristico(eam, "Dubai");
+    inserirNovoSitioTuristico(tailandia, "Bangkok");
+    inserirNovoSitioTuristico(quenia, "Safari Africano");
+    inserirNovoSitioTuristico(egito, "Cairo");
+
 }

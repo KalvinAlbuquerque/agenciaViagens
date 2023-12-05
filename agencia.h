@@ -4,7 +4,7 @@
 #include <math.h>
 #include <locale.h>
 
-#define TAM_MAX 50
+#define TAM_MAX 100
 
 /* 
 * Header destinado a conter todos os protótipos de funções e estruturas que serão utilizadas na aplicação, 
@@ -52,9 +52,10 @@ typedef struct Pais
 */
 typedef struct Turista
 {
-    char * nome;
+    char nome[TAM_MAX];
     int tipo;
     Pais *paisDestino;
+    SitioTuristico *sitioDestino;
     struct Turista * proximoTurista;
 
 }Turista;
@@ -125,7 +126,7 @@ SitioTuristico * selecionarSitioTuristico(Pais *pais, char* textoInicial);
 */
 
 /* Função responsável por cadastrar o turista */
-void cadastrarTurista(Turista ** listaTurista, const char * nome, Pais *paisDestino);
+void cadastrarTurista(Turista ** listaTurista, const char * nome, int tipo, Pais *paisDestino, SitioTuristico *sitioDestino);
 
 /* Função responsável por solicitar o nome do cliente cadastrado*/
 void solicitarNomeDoCliente(char *nome);
@@ -140,6 +141,8 @@ void listarTuristas(Turista *listaTuristas);
 * parâmetro e retorná-lo 
 */
 Turista * localizarCliente(Turista * listaTurista, char *nome);
+
+Pais * localizarPaisPeloNomeDoSitio(Pais * listaDePaises, const char * nomeDoSitio);
 
 //TODO: criar função para solicitar nome e pais de destino do turista. Caso não tenha, chama a funçao para decidir o pais de destino
 
@@ -169,10 +172,17 @@ Arvore * inserirPergunta(Arvore* raiz, const char * info, int valor) ;
 Arvore * criarNodo(const char * info, int valor);
 
 
-void printPerguntas(Arvore *raiz) ;
+Arvore * printPerguntas(Arvore *raiz) ;
 
-Arvore * rotateLeft(struct Arvore* x);
-Arvore* rotateRight(struct Arvore* y);
-int altura(Arvore* no);
+void popularTuristas(Pais *listaPaises, Turista **listaTuristas, char *nomeArquivo);
 
+void salvarTuristas(const char *nomeArquivo, Turista *listaTuristas);
+
+void freeAll(Turista **listaTuristas, Pais **listaPaises, Arvore *raiz);
+
+void freeArvore(Arvore *raiz);
+
+void carregarPerguntas(Arvore ** raiz);
+
+void carregarPaisesESitios(Pais ** listaPaises);
 
