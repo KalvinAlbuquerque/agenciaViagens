@@ -2,3 +2,5 @@ Glenda;2;Brasil;Fortaleza
 carol;2;Brasil;Fortaleza
 Kalvin feiao;1;Japão;Tokyo
 Joao Frango;1;Brasil;Salvador
+Bigs;2;Egito;Cairo
+Nao;2;Brasil;Belo Horizonte

@@ -75,6 +75,8 @@ int main()
                     {
                         Arvore * arvore = printPerguntas(raiz);
 
+                        pause();
+
                         tipo = 2;
                         
                         char nomeSitio[TAM_MAX];
@@ -1454,20 +1456,12 @@ Arvore * printPerguntas(Arvore *raiz)
         {
             raiz = printPerguntas(raiz->sim);
         }
-        else
-        {
-            printf("\nSeu destino é: %s\n", raiz->info);
-        }
     }
     else if (opcao == 'n' || opcao == 'N')
     {
         if(raiz->nao != NULL)
         {
             raiz = printPerguntas(raiz->nao);
-        }
-        else
-        {
-            printf("\nSeu destino é: %s\n", raiz->info);
         }
     }
     else
@@ -1476,7 +1470,6 @@ Arvore * printPerguntas(Arvore *raiz)
         
         raiz = printPerguntas(raiz);
     }
-
 
     return raiz;
 }
