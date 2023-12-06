@@ -195,7 +195,7 @@ int main()
             case 0:
             {
                 salvarTuristas("turistas.txt", listaTuristas);
-                //freeAll(&listaTuristas, &listaPaises, raiz);
+                freeAll(&listaTuristas, &listaPaises, raiz);
                 exit(1);
             }
             default:
