@@ -812,6 +812,7 @@ void listarPaisesSistemaAuxilio(Pais *listaPaises)
     }
 
     printf("*** Lista de países escolhidos por clientes que utilizaram o sistema de auxilio ***");
+    printf("\n");
 
     Pais * auxPais = listaPaises;
 
@@ -920,6 +921,7 @@ void listarPaisMaisVisitado(Pais *listaPaises)
     }
 
     printf("*** Pais mais visitado ***");
+    printf("\n");
 
     Pais * auxPais = listaPaises;
 
@@ -1022,6 +1024,7 @@ void listarPaisMaisVisitadoTipo2(Pais *listaPaises)
 void listarSitioMaisVisitado(Pais *listaPaises)
 {
     printf("*** Sítio mais visitado ***");
+    printf("\n");
 
     Pais * auxPais = listaPaises;
 
@@ -1061,12 +1064,10 @@ void listarSitioMaisVisitado(Pais *listaPaises)
         printf("\nVocê sabia? *0* \nO sítio mais visitado do nosso sistema é o %s com o total de %d visitas!", sitioMaisVisitado->nome, numeroDeVisitas);
         listarSitioMaisVisitadoTipo1(listaPaises);
         listarSitioMaisVisitadoTipo2(listaPaises);
-        getchar();
     }
     else
     {
         printf("\nNão temos um ranking ainda :(! Que tal você nos ajudar adquirindo uma passagem?");
-        getchar();
     }
 }
 
