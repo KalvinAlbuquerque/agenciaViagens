@@ -149,10 +149,37 @@ Pais * localizarPaisPeloNomeDoSitio(Pais * listaDePaises, const char * nomeDoSit
 /* Função destinada a printar o menu de escolhas do usuário*/
 void exibirMenu();
 
+void listarPaisesClientesDecididos(Pais * listaPaises);
+
+void listarPaisesSistemaAuxilio(Pais * listaPaises);
+
+void listarPaisesVisitados(Pais * listaPaises);
+
+void listarPaisesNaoVisitados(Pais * listaPaises);
+
+void listarPaisMaisVisitado(Pais * listaPaises);
+
+void listarPaisMaisVisitadoTipo1(Pais * listarPaises);
+
+void listarPaisMaisVisitadoTipo2(Pais * listarPaises);
+
+void listarSitioMaisVisitado(Pais * listaPaises);
+
+void listarSitioMaisVisitadoTipo1(Pais * listaPaises);
+
+void listarSitioMaisVisitadoTipo2(Pais * listaPaises);
 
 /* 
     FUNÇÕES UTILITÁRIAS
 */
+
+int numeroVisitasDoPais(Pais * pais);
+
+int numeroVisitasDoPaisTipo1(Pais * pais);
+
+int numeroVisitasDoPaisTipo2(Pais * pais);
+
+int verificarSePaisFoiVisitado(Pais * pais);
 
 /* Retorna 1 para aceitar a viagem e 0 se não */
 int confirmarViagem(char *nome, Pais *pais, SitioTuristico *sitioTuristico);

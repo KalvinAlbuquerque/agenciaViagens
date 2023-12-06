@@ -150,6 +150,48 @@ int main()
 
                 break;
             }
+            case 6:
+            {
+                listarPaisesClientesDecididos(listaPaises);
+                printf("\n");
+                pause();
+                break;
+            }
+            case 7:
+            {
+                listarPaisesSistemaAuxilio(listaPaises);
+                printf("\n");
+                pause();
+                break;
+            }
+            case 8:
+            {
+                listarPaisesVisitados(listaPaises);
+                printf("\n");
+                pause();
+                break;
+            }
+            case 9:
+            {
+                listarPaisesNaoVisitados(listaPaises);
+                printf("\n");
+                pause();
+                break;
+            }
+            case 10:
+            {
+                listarPaisMaisVisitado(listaPaises);
+                printf("\n");
+                pause();
+                break;
+            }
+            case 11:
+            {
+                listarSitioMaisVisitado(listaPaises);
+                printf("\n");
+                pause();
+                break;
+            }
             case 0:
             {
                 salvarTuristas("turistas.txt", listaTuristas);
@@ -167,7 +209,89 @@ int main()
 
 }
 
-int confirmarViagem(char *nome, Pais *pais, SitioTuristico *sitioTuristico) {
+int numeroVisitasDoPais(Pais * pais)
+{
+    if (pais == NULL)
+    {
+        return 0;
+    }
+
+    int result = 0;
+
+    SitioTuristico * auxSitio = pais->listaSitiosTuristico;
+
+    while(auxSitio != NULL)
+    {
+        result += auxSitio->countTurista1;
+        result += auxSitio->countTurista2;
+
+        auxSitio = auxSitio->proximoSitioTuristico;
+    }
+
+    return result;
+}
+
+int numeroVisitasDoPaisTipo1(Pais *pais)
+{
+    if (pais == NULL)
+    {
+        return 0;
+    }
+
+    int result = 0;
+
+    SitioTuristico * auxSitio = pais->listaSitiosTuristico;
+
+    while(auxSitio != NULL)
+    {
+        result += auxSitio->countTurista1;
+
+        auxSitio = auxSitio->proximoSitioTuristico;
+    }
+
+    return result;
+}
+
+int numeroVisitasDoPaisTipo2(Pais *pais)
+{
+    if (pais == NULL)
+    {
+        return 0;
+    }
+
+    int result = 0;
+
+    SitioTuristico * auxSitio = pais->listaSitiosTuristico;
+
+    while(auxSitio != NULL)
+    {
+        result += auxSitio->countTurista2;
+
+        auxSitio = auxSitio->proximoSitioTuristico;
+    }
+
+    return result;
+}
+
+int verificarSePaisFoiVisitado(Pais *pais)
+{
+    SitioTuristico * auxSitio = pais->listaSitiosTuristico;
+
+    while (auxSitio != NULL)
+    {
+        if (auxSitio->countTurista1 > 0 || auxSitio->countTurista2 > 0)
+        {
+            return 1;
+        }
+
+        auxSitio = auxSitio->proximoSitioTuristico;
+    }
+
+    return 0;
+}
+
+int confirmarViagem(char *nome, Pais *pais, SitioTuristico *sitioTuristico)
+{
 
     while (1)
     {
@@ -193,7 +317,6 @@ int confirmarViagem(char *nome, Pais *pais, SitioTuristico *sitioTuristico) {
         limparTela();
     }
 }
-
 
 void inserirPais(Pais ** listaPaises, const char * nomePais)
 {
@@ -629,8 +752,404 @@ void exibirMenu()
     printf("\n3.Exibir países de destino");
     printf("\n4.Exibir sítios turísticos de um país");
     printf("\n5.Exibir número de turístas por sítio turístico");
+    printf("\n6.Listar todos os países que foram visitados por clientes decididos");
+    printf("\n7.Listar todos os países que foram visitados por clientes que usaram o sistema de auxílio");
+    printf("\n8.Lista de países visitados em geral");
+    printf("\n9.Lista de países não visitados");
+    printf("\n10. País mais visitado");
+    printf("\n11. Sítio mais visitado");
     printf("\n0.Sair");
     printf("\n\nDigite sua opção: ");
+}
+
+void listarPaisesClientesDecididos(Pais *listaPaises)
+{
+    if (listaPaises == NULL)
+    {
+        return;
+    }
+
+    printf("*** Lista de países escolhidos por clientes decididos ***");
+
+    Pais * auxPais = listaPaises;
+
+    int counter = 0;
+
+    printf("\n");
+
+    while (auxPais != NULL)
+    {
+        SitioTuristico * auxSitio = auxPais->listaSitiosTuristico;
+
+        while(auxSitio != NULL)
+        {
+            if (auxSitio->countTurista1 > 0)
+            {
+                counter++;
+                
+                printf("\n%d. %s", counter, auxPais->nome);
+                
+                break;
+            }
+
+            auxSitio = auxSitio->proximoSitioTuristico;
+        }
+
+        auxPais = auxPais->proximoPais;
+    }
+
+    if (counter == 0)
+    {
+        printf("\nAinda não temos um ranking para esta categoria... Que tal você nos ajudar adquirindo uma passagem?");
+    }
+}
+
+void listarPaisesSistemaAuxilio(Pais *listaPaises)
+{
+    if (listaPaises == NULL)
+    {
+        return;
+    }
+
+    printf("*** Lista de países escolhidos por clientes que utilizaram o sistema de auxilio ***");
+
+    Pais * auxPais = listaPaises;
+
+    int counter = 0;
+
+    while (auxPais != NULL)
+    {
+        SitioTuristico * auxSitio = auxPais->listaSitiosTuristico;
+
+        while(auxSitio != NULL)
+        {
+            if (auxSitio->countTurista2 > 0)
+            {
+                counter++;
+                
+                printf("\n%d. %s", counter, auxPais->nome);
+                
+                break;
+            }
+
+            auxSitio = auxSitio->proximoSitioTuristico;
+        }
+
+        auxPais = auxPais->proximoPais;
+    }
+
+    if (counter == 0)
+    {
+        printf("\nAinda não temos um ranking para esta categoria... Que tal você nos ajudar adquirindo uma passagem?");
+    }
+}
+
+void listarPaisesVisitados(Pais *listaPaises)
+{
+    if (listaPaises == NULL)
+    {
+        return;
+    }
+
+    printf("*** Lista de países visitados ***");
+    printf("\n");
+
+    Pais * auxPais = listaPaises;
+
+    int counter = 0;
+
+    while (auxPais != NULL)
+    {
+        int result = verificarSePaisFoiVisitado(auxPais);
+
+        if (result == 1)
+        {
+            counter++;
+            
+            printf("\n%d. %s", counter, auxPais->nome);
+        }
+
+        auxPais = auxPais->proximoPais;
+    }
+
+    if (counter == 0)
+    {
+        printf("\nInfelizmente, nenhum país ainda foi visitado no nosso sistema :(");
+    }
+}
+
+void listarPaisesNaoVisitados(Pais *listaPaises)
+{
+    if (listaPaises == NULL)
+    {
+        return;
+    }
+
+    printf("*** Lista de países não visitados ***");
+    printf("\n");
+
+    Pais * auxPais = listaPaises;
+
+    int counter = 0;
+
+    while (auxPais != NULL)
+    {
+        int result = verificarSePaisFoiVisitado(auxPais);
+
+        if (result == 0)
+        {
+            counter++;
+            
+            printf("\n%d. %s", counter, auxPais->nome);            
+        }
+
+        auxPais = auxPais->proximoPais;
+    }
+
+    if (counter == 0)
+    {
+        printf("\nOba! Não há nenhum país no nosso sistema que ainda não foi visitado!");
+    }
+}
+
+void listarPaisMaisVisitado(Pais *listaPaises)
+{
+    if (listaPaises == NULL)
+    {
+        return;
+    }
+
+    printf("*** Pais mais visitado ***");
+
+    Pais * auxPais = listaPaises;
+
+    Pais * paisMaisVisitado = auxPais;
+    int numeroDeVisitas = numeroVisitasDoPais(auxPais);
+
+    int counter = 1;
+
+    while (auxPais->proximoPais != NULL)
+    {
+        auxPais = auxPais->proximoPais;
+
+        int numeroVisitasPaisAtual = numeroVisitasDoPais(auxPais);
+
+        if (numeroVisitasPaisAtual > numeroDeVisitas)
+        {
+            paisMaisVisitado = auxPais;
+            numeroDeVisitas = numeroVisitasPaisAtual;
+        }
+    }
+
+    if (numeroDeVisitas > 0)
+    {
+        printf("\nVocê sabia? *0* \nO país mais visitado do nosso sistema é o %s com o total de %d visitas!", paisMaisVisitado->nome, numeroDeVisitas);
+        listarPaisMaisVisitadoTipo1(listaPaises);
+        listarPaisMaisVisitadoTipo2(listaPaises);
+    }
+    else
+    {
+        printf("\nNão temos um ranking ainda :(! Que tal você nos ajudar adquirindo uma passagem?");
+    }
+}
+
+void listarPaisMaisVisitadoTipo1(Pais *listaPaises)
+{
+    if (listaPaises == NULL)
+    {
+        return;
+    }
+
+    Pais * auxPais = listaPaises;
+
+    Pais * paisMaisVisitado = auxPais;
+    int numeroDeVisitas = numeroVisitasDoPaisTipo1(auxPais);
+
+    int counter = 1;
+
+    while (auxPais->proximoPais != NULL)
+    {
+        auxPais = auxPais->proximoPais;
+
+        int numeroVisitasPaisAtual = numeroVisitasDoPaisTipo1(auxPais);
+
+        if (numeroVisitasPaisAtual > numeroDeVisitas)
+        {
+            paisMaisVisitado = auxPais;
+            numeroDeVisitas = numeroVisitasPaisAtual;
+        }
+    }
+
+    if (numeroDeVisitas > 0)
+    {
+        printf("\nPara o tipo de cliente decidido, o país %s é o destino mais escolhido, totalizando %d visitas!", paisMaisVisitado->nome, numeroDeVisitas);
+    }
+}
+
+void listarPaisMaisVisitadoTipo2(Pais *listaPaises)
+{
+    if (listaPaises == NULL)
+    {
+        return;
+    }
+
+    Pais * auxPais = listaPaises;
+
+    Pais * paisMaisVisitado = auxPais;
+    int numeroDeVisitas = numeroVisitasDoPaisTipo2(auxPais);
+
+    int counter = 1;
+
+    while (auxPais->proximoPais != NULL)
+    {
+        auxPais = auxPais->proximoPais;
+
+        int numeroVisitasPaisAtual = numeroVisitasDoPaisTipo2(auxPais);
+
+        if (numeroVisitasPaisAtual > numeroDeVisitas)
+        {
+            paisMaisVisitado = auxPais;
+            numeroDeVisitas = numeroVisitasPaisAtual;
+        }
+    }
+
+    if (numeroDeVisitas > 0)
+    {
+        printf("\nPara o tipo de cliente que utilizou o auxilio do sistema, o país %s é o destino mais escolhido, totalizando %d visitas!", paisMaisVisitado->nome, numeroDeVisitas);
+    }
+}
+
+void listarSitioMaisVisitado(Pais *listaPaises)
+{
+    printf("*** Sítio mais visitado ***");
+
+    Pais * auxPais = listaPaises;
+
+    SitioTuristico * sitioMaisVisitado = NULL;
+    int numeroDeVisitas = 0;
+
+    while(auxPais != NULL)
+    {
+        SitioTuristico * auxSitio = auxPais->listaSitiosTuristico;
+
+        while (auxSitio != NULL)
+        {
+            if (sitioMaisVisitado == NULL)
+            {
+                sitioMaisVisitado = auxSitio;
+                numeroDeVisitas = auxSitio->countTurista1 + auxSitio->countTurista2;
+            }
+            else
+            {
+                int totalVisitasSitioAtual = auxSitio->countTurista1 + auxSitio->countTurista2;
+
+                if (totalVisitasSitioAtual > numeroDeVisitas)
+                {
+                    sitioMaisVisitado = auxSitio;
+                    numeroDeVisitas = totalVisitasSitioAtual;
+                }
+            }
+
+            auxSitio = auxSitio->proximoSitioTuristico;
+        }
+
+        auxPais = auxPais->proximoPais;
+    }
+
+    if (numeroDeVisitas > 0)
+    {
+        printf("\nVocê sabia? *0* \nO sítio mais visitado do nosso sistema é o %s com o total de %d visitas!", sitioMaisVisitado->nome, numeroDeVisitas);
+        listarSitioMaisVisitadoTipo1(listaPaises);
+        listarSitioMaisVisitadoTipo2(listaPaises);
+        getchar();
+    }
+    else
+    {
+        printf("\nNão temos um ranking ainda :(! Que tal você nos ajudar adquirindo uma passagem?");
+        getchar();
+    }
+}
+
+void listarSitioMaisVisitadoTipo1(Pais *listaPaises)
+{    
+    Pais * auxPais = listaPaises;
+
+    SitioTuristico * sitioMaisVisitado = NULL;
+    int numeroDeVisitas = 0;
+
+    while(auxPais != NULL)
+    {
+        SitioTuristico * auxSitio = auxPais->listaSitiosTuristico;
+
+        while (auxSitio != NULL)
+        {
+            if (sitioMaisVisitado == NULL)
+            {
+                sitioMaisVisitado = auxSitio;
+                numeroDeVisitas = auxSitio->countTurista1;
+            }
+            else
+            {
+                int totalVisitasSitioAtual = auxSitio->countTurista1;
+
+                if (totalVisitasSitioAtual > numeroDeVisitas)
+                {
+                    sitioMaisVisitado = auxSitio;
+                    numeroDeVisitas = totalVisitasSitioAtual;
+                }
+            }
+
+            auxSitio = auxSitio->proximoSitioTuristico;
+        }
+
+        auxPais = auxPais->proximoPais;
+    }
+
+    if (numeroDeVisitas > 0)
+    {
+        printf("\nPara o tipo de cliente decidido, o sítio %s é o destino mais escolhido, totalizando %d visitas!", sitioMaisVisitado->nome, numeroDeVisitas);
+    }
+}
+
+void listarSitioMaisVisitadoTipo2(Pais *listaPaises)
+{    
+    Pais * auxPais = listaPaises;
+
+    SitioTuristico * sitioMaisVisitado = NULL;
+    int numeroDeVisitas = 0;
+
+    while(auxPais != NULL)
+    {
+        SitioTuristico * auxSitio = auxPais->listaSitiosTuristico;
+
+        while (auxSitio != NULL)
+        {
+            if (sitioMaisVisitado == NULL)
+            {
+                sitioMaisVisitado = auxSitio;
+                numeroDeVisitas = auxSitio->countTurista2;
+            }
+            else
+            {
+                int totalVisitasSitioAtual = auxSitio->countTurista2;
+
+                if (totalVisitasSitioAtual > numeroDeVisitas)
+                {
+                    sitioMaisVisitado = auxSitio;
+                    numeroDeVisitas = totalVisitasSitioAtual;
+                }
+            }
+
+            auxSitio = auxSitio->proximoSitioTuristico;
+        }
+
+        auxPais = auxPais->proximoPais;
+    }
+
+    if (numeroDeVisitas > 0)
+    {
+        printf("\nPara o tipo de cliente que utilizou o sistema de auxílio, o sítio %s é o destino mais escolhido, totalizando %d visitas!", sitioMaisVisitado->nome, numeroDeVisitas);
+    }
 }
 
 void pause() 
