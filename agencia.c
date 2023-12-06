@@ -747,18 +747,18 @@ void exibirMenu()
     printf("********************************************\n");
     printf("*  Bem-vindo à Agência de Viagens!!!       *\n");
     printf("********************************************");
-    printf("\n1.Cadastrar cliente");
-    printf("\n2.Exibir clientes cadastrados");
-    printf("\n3.Exibir países de destino");
-    printf("\n4.Exibir sítios turísticos de um país");
-    printf("\n5.Exibir número de turístas por sítio turístico");
-    printf("\n6.Listar todos os países que foram visitados por clientes decididos");
-    printf("\n7.Listar todos os países que foram visitados por clientes que usaram o sistema de auxílio");
-    printf("\n8.Lista de países visitados em geral");
-    printf("\n9.Lista de países não visitados");
-    printf("\n10. País mais visitado");
-    printf("\n11. Sítio mais visitado");
-    printf("\n0.Sair");
+    printf("\n\n1 -> Cadastrar cliente");
+    printf("\n2 -> Exibir clientes cadastrados");
+    printf("\n3 -> Exibir países de destino");
+    printf("\n4 -> Exibir sítios turísticos de um país");
+    printf("\n5 -> Exibir número de turístas por sítio turístico");
+    printf("\n6 -> Listar todos os países que foram visitados por clientes decididos");
+    printf("\n7 -> Listar todos os países que foram visitados por clientes que usaram o sistema de auxílio");
+    printf("\n8 -> Lista de países visitados em geral");
+    printf("\n9 -> Lista de países não visitados");
+    printf("\n10 -> País mais visitado");
+    printf("\n11 -> Sítio mais visitado");
+    printf("\n0 -> Sair");
     printf("\n\nDigite sua opção: ");
 }
 
