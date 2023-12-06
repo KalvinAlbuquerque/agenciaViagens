@@ -1233,7 +1233,7 @@ void listarSitioMaisVisitadoTipo1(Pais *listaPaises)
 
             while(auxSitio != NULL)
             {
-                int totalVisitasSitioAtual = auxSitio->countTurista1 + auxSitio->countTurista2;
+                int totalVisitasSitioAtual = auxSitio->countTurista1;
 
                 if (totalVisitasSitioAtual == numeroDeVisitas)
                 {
@@ -1309,7 +1309,7 @@ void listarSitioMaisVisitadoTipo2(Pais *listaPaises)
 
             while(auxSitio != NULL)
             {
-                int totalVisitasSitioAtual = auxSitio->countTurista1 + auxSitio->countTurista2;
+                int totalVisitasSitioAtual = auxSitio->countTurista2;
 
                 if (totalVisitasSitioAtual == numeroDeVisitas)
                 {
