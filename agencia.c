@@ -1258,7 +1258,7 @@ void listarSitioMaisVisitadoTipo1(Pais *listaPaises)
 
     if (empate)
     {
-        printf("\nNão há um sitio mais visitado no nosso sistema para o tipo de cliente que utilizou o auxilio do sistema! Porém, há sitios que estão entre os mais visitados, como por exemplo %s/%s com %d visitas!", sitioMaisVisitado->nome, paisDoSitio->nome, numeroDeVisitas);
+        printf("\nNão há um sitio mais visitado no nosso sistema para o tipo de cliente decidido! Porém, há sitios que estão entre os mais visitados, como por exemplo %s/%s com %d visitas!", sitioMaisVisitado->nome, paisDoSitio->nome, numeroDeVisitas);
     } 
     else if (numeroDeVisitas)
     {
